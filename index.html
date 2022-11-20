@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ChouTuan - Index</title>
+</head>
+
+<body>
+    <h1>待定</h1>
+    <div id="div-please-login" style="display: none;">
+        <h2>请先<a href="./sign.html">登录/注册</a></h2>
+    </div>
+    <div id="div-hello" style="display: none;">
+        <h2>您好，<span id="span-username"></span></h2>
+        <a href="javascript:logout();">登出</a>
+    </div>
+    <ul>
+        <li><a href="./deposit.html">我要存件</a></li>
+        <li><a href="./pickup.html">我要取件</a></li>
+    </ul>
+    <script src="./axios.min.js"></script>
+    <script src="./common.js"></script>
+    <script type="text/javascript">
+        loginCheck((data) => {
+            document.getElementById("div-hello").style.display = "block";
+            document.getElementById("span-username").innerHTML = data;
+        }, () => {
+            document.getElementById("div-please-login").style.display = "block";
+        });
+        function logout() {
+            axios.get(Api("/logout")).then(({ data: { code, message, data } }) => {
+                alert(message);
+                location.reload();
+            })
+        }
+    </script>
+</body>
+
+</html>

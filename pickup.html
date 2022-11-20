@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ChouTuan - Pickup</title>
+</head>
+
+<body>
+    <h1><a href="/">待定</a> - 我要取件</h1>
+    <div id="div-please-login" style="display: none;">
+        <h2>请先<a href="./sign.html">登录/注册</a></h2>
+    </div>
+    <div id="div-hello" style="display: none;">
+        <h2>您好，<span id="span-username"></span></h2>
+    </div>
+    <div id="div-pickup-info">
+        <h2>我的取件</h2>
+        <ul id="ul-my-pickup"></ul>
+    </div>
+    <script src="./axios.min.js"></script>
+    <script src="./common.js"></script>
+    <script type="text/javascript">
+        loginCheck((data) => {
+            document.getElementById("div-hello").style.display = "block";
+            document.getElementById("span-username").innerHTML = data;
+            axios.get(Api("/pickup/list")).then(({ data: { code, message, data } }) => {
+                let pickupList = document.getElementById("ul-my-pickup");
+                for (const d of data) {
+                    let li = document.createElement("li");
+                    li.innerHTML = `存件人${data.deposit_username} 存件在设备${data.device_id} ${data.cabinet_no}号柜中`;
+                    let a = document.createElement("a");
+                    a.setAttribute("href", `javascript:pickup(${data.id})`)
+                    li.appendChild(a);
+                    pickupList.appendChild(li);
+                }
+            })
+        }, () => {
+            document.getElementById("div-please-login").style.display = "block";
+        });
+
+        function pickup(id) {
+            axios({
+                method: "POST",
+                url: Api("/deposit"),
+                data: createFormData({ id }),
+            }).then(({ data: { code, message, data } }) => {
+                console.log(code, message, data);
+                alert(message);
+                location.reload();
+            });
+        }
+    </script>
+</body>
+
+</html>

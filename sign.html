@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ChouTuan - Sign</title>
+</head>
+
+<body>
+    <h1><a href="/">待定</a> - 登录/注册</h1>
+    <label>用户名：</label><input type="text" id="input-username"><br>
+    <label>密码：</label><input type="password" id="input-passwd"><br>
+    <input type="button" value="登录" onclick="login()">
+    <input type="button" value="注册" onclick="register()">
+    <script src="./axios.min.js"></script>
+    <script src="./common.js"></script>
+    <script type="text/javascript">
+        function login() {
+            axios({
+                method: "POST",
+                url: Api("/login"),
+                data: createFormData({
+                    username: document.getElementById("input-username").value,
+                    passwd: document.getElementById("input-passwd").value
+                }),
+            }).then(({ data: { code, message, data } }) => {
+                console.log(code, message, data);
+                alert(message);
+                location.href = "/";
+            });
+        }
+
+        function register() {
+            axios({
+                method: "POST",
+                url: Api("/register"),
+                data: createFormData({
+                    username: document.getElementById("input-username").value,
+                    passwd: document.getElementById("input-passwd").value
+                }),
+            }).then(({ data: { code, message, data } }) => {
+                console.log(code, message, data);
+                alert(message);
+                location.reload();
+            });
+        }
+    </script>
+</body>
+
+</html>

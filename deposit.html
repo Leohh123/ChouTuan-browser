@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ChouTuan - Deposit</title>
+</head>
+
+<body>
+    <h1><a href="/">待定</a> - 我要存件</h1>
+    <div id="div-please-login" style="display: none;">
+        <h2>请先<a href="./sign.html">登录/注册</a></h2>
+    </div>
+    <div id="div-hello" style="display: none;">
+        <h2>您好，<span id="span-username"></span></h2>
+    </div>
+    <div id="div-please-scan" style="display: none;">
+        请使用微信扫描屏幕上的二维码
+    </div>
+    <div id="div-deposit-info" style="display: none;">
+        <label>设备ID：</label><span id="span-device-id"></span><br>
+        <label>柜门号：</label><span id="span-cabinet-no"></span><br>
+        <label>收件人用户名：</label><input type="text" id="input-pickup-username"></input><br>
+        <input type="button" value="开门存件" onclick="deposit()">
+    </div>
+    <h2>我的存件</h2>
+    <ul id="ul-my-deposit"></ul>
+    <script src="./axios.min.js"></script>
+    <script src="./common.js"></script>
+    <script type="text/javascript">
+        let deviceId, cabinetNo, token;
+
+        loginCheck((data) => {
+            document.getElementById("div-hello").style.display = "block";
+            document.getElementById("span-username").innerHTML = data;
+            let url = location.search;
+            let urlStr = url.split('?')[1];
+            const params = new URLSearchParams(urlStr);
+            deviceId = params.get("d");
+            cabinetNo = params.get("c");
+            if (deviceId && cabinetNo) {
+                document.getElementById("span-device-id").innerHTML = deviceId;
+                document.getElementById("span-cabinet-no").innerHTML = cabinetNo;
+                document.getElementById("div-deposit-info").style.display = "block";
+            } else {
+                document.getElementById("div-please-scan").style.display = "block";
+            }
+            axios.get(Api("/deposit/list")).then(({ data: { code, message, data } }) => {
+                let depositList = document.getElementById("ul-my-deposit");
+                for (const d of data) {
+                    let li = document.createElement("li");
+                    li.innerHTML = `存件在设备【${d.device_id}】\t【${d.cabinet_no}号柜】中\t取件人【${d.pickup_username}】`;
+                    depositList.appendChild(li);
+                }
+            })
+        }, () => {
+            document.getElementById("div-please-login").style.display = "block";
+        });
+
+        function deposit() {
+            axios({
+                method: "POST",
+                url: Api("/deposit"),
+                data: createFormData({
+                    device_id: deviceId,
+                    cabinet_no: cabinetNo,
+                    pickup_username: document.getElementById("input-pickup-username").value
+                }),
+            }).then(({ data: { code, message, data } }) => {
+                console.log(code, message, data);
+                alert(message);
+                location.href = "/";
+            });
+        }
+    </script>
+</body>
+
+</html>
