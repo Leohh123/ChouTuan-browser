@@ -51,7 +51,7 @@
                 let depositList = document.getElementById("ul-my-deposit");
                 for (const d of data) {
                     let li = document.createElement("li");
-                    li.innerHTML = `存件在设备【${d.device_id}】\t【${d.cabinet_no}号柜】中\t取件人【${d.pickup_username}】（${d.state <= 1 ? "待取件" : "已取件"}）`;
+                    li.innerHTML = `【${new Date(d.moment).toLocaleString()}】\t存件在设备【${d.device_id}】\t【${d.cabinet_no}号柜】中\t取件人【${d.pickup_username}】\t（${d.state <= 1 ? "待取件" : "已取件"}）`;
                     depositList.appendChild(li);
                 }
             })
