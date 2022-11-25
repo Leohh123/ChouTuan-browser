@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <h1><a href="/">待定</a> - 我要存件</h1>
+    <h1><a href="/">丑团外卖柜</a> - 我要存件</h1>
     <div id="div-please-login" style="display: none;">
         <h2>请先<a href="./sign.html">登录/注册</a></h2>
     </div>
@@ -51,7 +51,7 @@
                 let depositList = document.getElementById("ul-my-deposit");
                 for (const d of data) {
                     let li = document.createElement("li");
-                    li.innerHTML = `存件在设备【${d.device_id}】\t【${d.cabinet_no}号柜】中\t取件人【${d.pickup_username}】`;
+                    li.innerHTML = `存件在设备【${d.device_id}】\t【${d.cabinet_no}号柜】中\t取件人【${d.pickup_username}】（${d.state <= 1 ? "待取件" : "已取件"}）`;
                     depositList.appendChild(li);
                 }
             })

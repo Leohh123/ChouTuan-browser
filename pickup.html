@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <h1><a href="/">待定</a> - 我要取件</h1>
+    <h1><a href="/">丑团外卖柜</a> - 我要取件</h1>
     <div id="div-please-login" style="display: none;">
         <h2>请先<a href="./sign.html">登录/注册</a></h2>
     </div>
@@ -30,9 +30,15 @@
                 let pickupList = document.getElementById("ul-my-pickup");
                 for (const d of data) {
                     let li = document.createElement("li");
-                    li.innerHTML = `存件人${data.deposit_username} 存件在设备${data.device_id} ${data.cabinet_no}号柜中`;
+                    li.innerHTML = `存件人【${d.deposit_username}】 存件在设备【${d.device_id}】 【${d.cabinet_no}号柜】中 `;
                     let a = document.createElement("a");
-                    a.setAttribute("href", `javascript:pickup(${data.id})`)
+                    if (d.state <= 1) {
+                        a.setAttribute("href", `javascript:pickup(${d.id})`);
+                        a.innerHTML = "点击取件"
+                    } else {
+                        a.setAttribute("href", `javascript:void(0)`);
+                        a.innerHTML = "已取件"
+                    }
                     li.appendChild(a);
                     pickupList.appendChild(li);
                 }
@@ -44,7 +50,7 @@
         function pickup(id) {
             axios({
                 method: "POST",
-                url: Api("/deposit"),
+                url: Api("/pickup"),
                 data: createFormData({ id }),
             }).then(({ data: { code, message, data } }) => {
                 console.log(code, message, data);
